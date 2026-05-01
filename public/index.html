@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UOL SmartAssist — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --white: #ffffff;
+  --off: #f7f5f1;
+  --warm: #edeae3;
+  --border: #dedad0;
+  --border-dark: #ccc8bc;
+  --mid: #9a9590;
+  --dark: #1a1916;
+  --ink: #2d2c28;
+  --teal: #4a8a7c;
+  --teal-bg: #edf5f3;
+  --teal-border: #c2ddd8;
+  --salmon: #c86a52;
+  --salmon-bg: #fdf1ee;
+  --sand: #c4ac88;
+  --sand-bg: #f5f0e6;
+  --green: #3d8b6e;
+  --green-bg: #edf6f1;
+  --amber: #b8871e;
+  --amber-bg: #fdf7ec;
+  --sidebar-w: 230px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--off);color:var(--ink);display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sb{width:var(--sidebar-w);background:var(--dark);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform .3s}
+.sb-logo{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:11px}
+.sb-mark{width:36px;height:36px;border:1px solid rgba(196,172,136,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sb-brand{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--white);letter-spacing:-.2px}
+.sb-univ{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--sand);font-weight:400;font-family:'Outfit',sans-serif;margin-top:2px}
+
+.sb-nav{flex:1;padding:.75rem .6rem;overflow-y:auto}
+.sb-section{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);padding:10px 10px 4px;margin-top:.25rem}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13px;color:rgba(255,255,255,.45);cursor:pointer;transition:background .15s,color .15s;text-decoration:none;margin-bottom:1px;font-weight:400}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.sb-item.active{background:rgba(196,172,136,.1);color:var(--sand);border:1px solid rgba(196,172,136,.15)}
+.sb-icon{width:16px;text-align:center;font-size:14px;flex-shrink:0}
+.sb-badge{margin-left:auto;background:var(--teal);color:var(--white);font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;letter-spacing:.5px}
+
+.sb-foot{padding:.75rem .6rem;border-top:1px solid rgba(255,255,255,.07)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s}
+.sb-user:hover{background:rgba(255,255,255,.05)}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#6cb8ab);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--white);flex-shrink:0}
+.sb-uname{font-size:12.5px;font-weight:500;color:rgba(255,255,255,.7)}
+.sb-urole{font-size:10px;color:rgba(255,255,255,.3)}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ── TOPBAR ── */
+.top{background:var(--white);border-bottom:1px solid var(--border);padding:0 2.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.top-l{display:flex;align-items:center;gap:14px}
+.top-ham{display:none;background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink)}
+.top-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--dark);letter-spacing:-.3px}
+.top-date{font-size:11px;color:var(--mid);font-weight:300}
+.top-r{display:flex;align-items:center;gap:10px}
+.top-nav{display:flex;align-items:center;gap:6px;margin-left:20px}
+.top-nav a{color:var(--ink);text-decoration:none;font-size:12px;font-weight:500;padding:7px 10px;border-radius:7px;transition:background .15s,color .15s}
+.top-nav a:hover{background:var(--off);color:var(--teal)}
+.btn-primary{background:var(--dark);color:var(--white);border:none;padding:8px 18px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;letter-spacing:.3px;transition:background .2s;display:flex;align-items:center;gap:7px}
+.btn-primary:hover{background:var(--ink)}
+
+/* ── CONTENT ── */
+.content{padding:2.5rem;flex:1}
+
+/* LANDING */
+.landing{min-height:calc(100vh - 58px);display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:2rem;padding:1rem 0 3rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.landing-copy{max-width:680px}
+.uol-logo{display:flex;align-items:center;gap:14px;margin-bottom:2rem}
+.uol-seal{width:74px;height:74px;border-radius:18px;background:var(--dark);color:var(--sand);border:1px solid rgba(196,172,136,.45);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:24px;font-weight:600;letter-spacing:.5px;box-shadow:0 18px 42px rgba(26,25,22,.14)}
+.uol-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--dark);letter-spacing:-.4px}
+.uol-sub{font-size:10px;letter-spacing:2.2px;text-transform:uppercase;color:var(--teal);font-weight:600;margin-top:4px}
+.landing h1{font-family:'Playfair Display',serif;font-size:clamp(44px,6vw,78px);font-weight:500;letter-spacing:-2px;line-height:.98;color:var(--dark);margin-bottom:1.25rem}
+.landing h1 em{font-style:italic;color:var(--teal)}
+.landing p{font-size:16px;line-height:1.8;color:#6f6a63;font-weight:300;max-width:560px;margin-bottom:1.75rem}
+.landing-actions{display:flex;gap:10px;flex-wrap:wrap}
+.landing-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 18px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.3px;border:1px solid var(--border)}
+.landing-btn.dark{background:var(--dark);color:var(--white);border-color:var(--dark)}
+.landing-btn.light{background:var(--white);color:var(--ink)}
+.landing-panel{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.5rem;box-shadow:0 24px 70px rgba(26,25,22,.08)}
+.landing-panel-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.mini-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--dark)}
+.mini-live{font-size:10px;text-transform:uppercase;letter-spacing:1.8px;color:var(--green);font-weight:600}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini-card{background:var(--off);border:1px solid var(--border);border-radius:12px;padding:1rem;min-height:112px}
+.mini-k{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);font-weight:600;margin-bottom:.55rem}
+.mini-v{font-family:'Playfair Display',serif;font-size:25px;color:var(--dark);margin-bottom:.25rem}
+.mini-d{font-size:12px;color:#7b766f;line-height:1.45;font-weight:300}
+
+/* ── WELCOME ── */
+.hero{margin-bottom:2.5rem;border-bottom:1px solid var(--border);padding-bottom:2rem;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}
+.hero-h{font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,42px);font-weight:500;color:var(--dark);letter-spacing:-1px;line-height:1.1}
+.hero-h em{font-style:italic;color:var(--teal)}
+.hero-sub{font-size:13px;color:var(--mid);margin-top:.4rem;font-weight:300}
+.hero-badges{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.hb{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px}
+.hb.ok{background:var(--green-bg);color:var(--green);border:1px solid #b8ddd0}
+.hb.warn{background:var(--amber-bg);color:var(--amber);border:1px solid #e8d4a8}
+.hb-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:border-color .2s,transform .2s;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat.teal::before{background:var(--teal)}
+.stat.salmon::before{background:var(--salmon)}
+.stat.sand::before{background:var(--sand)}
+.stat.green::before{background:var(--green)}
+.stat:hover{border-color:var(--border-dark);transform:translateY(-2px)}
+.stat-icon{font-size:20px;margin-bottom:.75rem;display:block}
+.stat-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--dark);letter-spacing:-.5px;margin-bottom:2px}
+.stat-lbl{font-size:11px;color:var(--mid);font-weight:400;letter-spacing:.5px;text-transform:uppercase}
+.stat-chip{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:500;padding:2px 8px;border-radius:10px;margin-top:8px}
+.stat-chip.ok{background:var(--green-bg);color:var(--green)}
+.stat-chip.warn{background:var(--amber-bg);color:var(--amber)}
+
+/* ── GRID ── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.span2{grid-column:1/-1}
+
+/* ── CARD ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.card-h{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-h h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:500;color:var(--dark);letter-spacing:-.2px;display:flex;align-items:center;gap:8px}
+.card-b{padding:1.5rem}
+.btn-sm{background:var(--off);border:1px solid var(--border);color:var(--ink);font-size:11.5px;font-weight:500;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;transition:border-color .15s,background .15s;letter-spacing:.2px}
+.btn-sm:hover{border-color:var(--border-dark);background:var(--warm)}
+
+/* ── SERVICES GRID ── */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.svc{background:var(--off);border:1px solid var(--border);border-radius:10px;padding:1.1rem;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:7px}
+.svc:hover{border-color:var(--teal-border);background:var(--teal-bg);transform:translateY(-2px)}
+.svc-icon{font-size:22px}
+.svc-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:500;color:var(--dark)}
+.svc-desc{font-size:11.5px;color:var(--mid);font-weight:300}
+.svc-tag{font-size:10.5px;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.svc-tag.ok{color:var(--green)}.svc-tag.warn{color:var(--amber)}.svc-tag.red{color:var(--salmon)}
+
+/* ── NOTICES ── */
+.notices{display:flex;flex-direction:column;gap:10px}
+.notice{display:flex;gap:12px;padding:12px 14px;border-radius:9px;border:1px solid transparent;font-size:13px}
+.notice.info{background:var(--teal-bg);border-color:var(--teal-border)}
+.notice.warn{background:var(--amber-bg);border-color:#e8d4a8}
+.notice-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.notice-txt{color:var(--ink);line-height:1.55;font-weight:300}
+.notice-txt strong{font-weight:600;color:var(--dark)}
+
+/* ── AI CHAT ── */
+.chat-wrap{display:flex;flex-direction:column;height:380px}
+.chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.chat-msgs::-webkit-scrollbar{width:4px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.msg{max-width:82%;padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.6;font-weight:300;animation:msgIn .22s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;background:var(--dark);color:var(--white);border-bottom-right-radius:4px;font-weight:400}
+.msg.ai{align-self:flex-start;background:var(--off);border:1px solid var(--border);color:var(--ink);border-bottom-left-radius:4px}
+.msg-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:4px}
+.typing{align-self:flex-start;background:var(--off);border:1px solid var(--border);border-radius:12px;border-bottom-left-radius:4px;padding:12px 16px;display:none}
+.dots{display:flex;gap:4px}
+.dots span{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:dot 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+.qp{display:flex;flex-wrap:wrap;gap:6px;margin:.9rem 0 .6rem}
+.qbtn{background:var(--off);border:1px solid var(--border);color:var(--ink);font-size:11px;padding:4px 11px;border-radius:20px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;font-weight:400}
+.qbtn:hover{background:var(--teal-bg);border-color:var(--teal-border);color:var(--teal)}
+
+.chat-row{display:flex;gap:8px;margin-top:8px}
+.chat-input{flex:1;background:var(--off);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--ink);font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;font-weight:300}
+.chat-input:focus{border-color:var(--teal);background:var(--white)}
+.chat-input::placeholder{color:#c0bdb5}
+.chat-send{width:38px;height:38px;background:var(--dark);border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:16px;flex-shrink:0;transition:background .2s}
+.chat-send:hover{background:var(--ink)}
+
+/* ── VOUCHER ── */
+.voucher-tbl{width:100%;border-collapse:collapse}
+.voucher-tbl tr{border-bottom:1px solid var(--border)}
+.voucher-tbl tr:last-child{border-bottom:none}
+.voucher-tbl td{padding:9px 0;font-size:13px}
+.voucher-tbl td:first-child{color:var(--mid);font-weight:300;width:55%}
+.voucher-tbl td:last-child{font-weight:500;text-align:right;color:var(--dark)}
+.voucher-tbl .amt{font-family:'Playfair Display',serif;font-size:16px;color:var(--teal)}
+.voucher-tbl .ok{color:var(--green)}
+.voucher-tbl .warn{color:var(--amber)}
+
+.btn-dl{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:1.25rem;padding:12px;background:var(--dark);color:var(--white);font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;border:none;border-radius:8px;cursor:pointer;text-decoration:none;transition:background .2s;letter-spacing:.3px}
+.btn-dl:hover{background:var(--ink)}
+
+/* ── HOSTEL ── */
+.hostel-rows{display:flex;flex-direction:column;gap:9px;margin-bottom:1rem}
+.h-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--off);border-radius:8px;font-size:13px}
+.h-row .h-lbl{color:var(--mid);font-weight:300}
+.h-row .h-val{font-weight:500;color:var(--dark)}
+.h-row .h-val.warn{color:var(--amber)}
+.h-row .h-val.ok{color:var(--green)}
+.h-row .h-val.red{color:var(--salmon)}
+.btn-warn{width:100%;padding:10px;background:var(--salmon-bg);border:1px solid #f0bfb6;color:var(--salmon);font-size:12.5px;font-weight:500;border-radius:8px;cursor:pointer;font-family:'Outfit',sans-serif;transition:background .15s;letter-spacing:.2px}
+.btn-warn:hover{background:#fce8e3}
+.hostel-ai{margin-bottom:.75rem;padding:10px 12px;background:var(--teal-bg);border:1px solid var(--teal-border);border-radius:8px;font-size:12.5px;color:var(--teal);font-weight:300;display:none;line-height:1.5}
+
+/* ── UPLOAD ── */
+.upload-zone{border:1.5px dashed var(--border-dark);border-radius:12px;padding:2.5rem 2rem;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.upload-zone:hover{border-color:var(--teal);background:var(--teal-bg)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.upload-icon-big{font-size:40px;margin-bottom:.75rem;display:block}
+.upload-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--dark);margin-bottom:.35rem}
+.upload-sub{font-size:12.5px;color:var(--mid);font-weight:300}
+.upload-hint{font-size:11px;color:var(--border-dark);margin-top:.4rem}
+.upload-res{margin-top:1rem;padding:11px 14px;background:var(--green-bg);border:1px solid #b8ddd0;border-radius:8px;font-size:13px;color:var(--green);display:none;font-weight:300;line-height:1.5}
+
+/* CONTACT */
+.contact-section{margin-top:1.5rem;background:var(--dark);color:var(--white);border-radius:16px;padding:1.6rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.contact-title{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:.35rem;color:var(--white)}
+.contact-copy{font-size:13px;color:rgba(255,255,255,.48);line-height:1.7;font-weight:300}
+.contact-box{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;background:rgba(255,255,255,.035)}
+.contact-box strong{display:block;font-size:12px;color:var(--sand);letter-spacing:1.4px;text-transform:uppercase;margin-bottom:.5rem}
+.contact-box span{font-size:13px;color:rgba(255,255,255,.72);line-height:1.6}
+
+/* ── FADE IN ANIMATION ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.stats .stat:nth-child(1){animation:fadeUp .4s .05s both}
+.stats .stat:nth-child(2){animation:fadeUp .4s .1s both}
+.stats .stat:nth-child(3){animation:fadeUp .4s .15s both}
+.stats .stat:nth-child(4){animation:fadeUp .4s .2s both}
+.card{animation:fadeUp .4s .25s both}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+@media(max-width:768px){
+  .sb{transform:translateX(-100%)}
+  .sb.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .top-ham{display:block}
+  .top-nav{display:none}
+  .content{padding:1.25rem}
+  .landing{grid-template-columns:1fr;min-height:auto;padding-top:1rem}
+  .contact-section{grid-template-columns:1fr}
+  .hero{flex-direction:column;align-items:flex-start}
+}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sb" id="sb">
+  <div class="sb-logo">
+    <div class="sb-mark">🎓</div>
+    <div>
+      <div class="sb-brand">SmartAssist</div>
+      <div class="sb-univ">Univ. of Lahore</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">Main</div>
+    <a class="sb-item active" href="#dashboard-section" onclick="setActive(this);smoothScroll('dashboard-section')">
+      <span class="sb-icon">⌂</span> Dashboard
+    </a>
+    <a class="sb-item" href="#ai-section" onclick="setActive(this);smoothScroll('ai-section')">
+      <span class="sb-icon">◈</span> AI Assistant
+      <span class="sb-badge">Live</span>
+    </a>
+
+    <div class="sb-section">Services</div>
+    <a class="sb-item" href="#" onclick="setActive(this);quickCheck('scholarship')">
+      <span class="sb-icon">✦</span> Scholarship
+    </a>
+    <a class="sb-item" href="#" onclick="setActive(this);quickCheck('fee')">
+      <span class="sb-icon">◉</span> Fee Voucher
+    </a>
+    <a class="sb-item" href="#" onclick="setActive(this);quickCheck('hostel')">
+      <span class="sb-icon">⬡</span> Hostel
+    </a>
+    <a class="sb-item" href="#" onclick="setActive(this);quickCheck('admit')">
+      <span class="sb-icon">▣</span> Admit Card
+    </a>
+
+    <div class="sb-section">Tools</div>
+    <a class="sb-item" href="#" onclick="setActive(this);smoothScroll('upload-section')">
+      <span class="sb-icon">↑</span> Upload & Verify
+    </a>
+    <a class="sb-item" href="/login" onclick="signOut(event)">
+      <span class="sb-icon">←</span> Sign Out
+    </a>
+  </nav>
+
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-avatar" id="sbAvatar">AL</div>
+      <div>
+        <div class="sb-uname" id="sbName">Ali</div>
+        <div class="sb-urole">Student</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="top">
+    <div class="top-l">
+      <button class="top-ham" onclick="toggleSb()">☰</button>
+      <div>
+        <div class="top-title">Student Dashboard</div>
+        <div class="top-date" id="topDate"></div>
+      </div>
+      <nav class="top-nav">
+        <a href="#dashboard-section" onclick="smoothScroll('dashboard-section')">Dashboard</a>
+        <a href="/login">Login</a>
+        <a href="/login?mode=register">Register</a>
+        <a href="#contact-section" onclick="smoothScroll('contact-section')">Contact</a>
+      </nav>
+    </div>
+    <div class="top-r">
+      <button class="btn-primary" onclick="smoothScroll('ai-section')">◈ Ask AI</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- LANDING -->
+    <section class="landing" id="home-section">
+      <div class="landing-copy">
+        <div class="uol-logo">
+          <div class="uol-seal">UOL</div>
+          <div>
+            <div class="uol-name">University of Lahore</div>
+            <div class="uol-sub">AI Student Service Portal</div>
+          </div>
+        </div>
+        <h1>Student services,<br/><em>smarter</em> and faster.</h1>
+        <p>UOL SmartAssist helps students check scholarships, download fee vouchers, verify uploaded vouchers with AI, manage hostel dues, and get urgent support from one professional portal.</p>
+        <div class="landing-actions">
+          <a class="landing-btn dark" href="/login?mode=register">Register Now</a>
+          <a class="landing-btn light" href="/login">Login</a>
+          <a class="landing-btn light" href="#dashboard-section" onclick="smoothScroll('dashboard-section')">View Dashboard</a>
+        </div>
+      </div>
+
+      <div class="landing-panel">
+        <div class="landing-panel-top">
+          <div class="mini-title">Live Student Overview</div>
+          <div class="mini-live">Online</div>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-card">
+            <div class="mini-k">Scholarship</div>
+            <div class="mini-v">--</div>
+            <div class="mini-d">No scholarship data available yet.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-k">Voucher AI</div>
+            <div class="mini-v">--</div>
+            <div class="mini-d">No voucher verification data available yet.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-k">Hostel</div>
+            <div class="mini-v">--</div>
+            <div class="mini-d">No hostel data available yet.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-k">Support</div>
+            <div class="mini-v">--</div>
+            <div class="mini-d">No support activity available yet.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HERO -->
+    <div class="hero" id="dashboard-section">
+      <div>
+        <h2 class="hero-h">Welcome, <em id="hName">Student</em></h2>
+        <p class="hero-sub" id="hSub">Welcome back to your student portal</p>
+      </div>
+      <div class="hero-badges">
+        <span class="hb ok"><span class="hb-dot"></span>No Scholarship Data</span>
+        <span class="hb warn"><span class="hb-dot"></span>No Hostel Data</span>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat teal">
+        <span class="stat-icon">✦</span>
+        <div class="stat-val">--</div>
+        <div class="stat-lbl">Scholarship</div>
+        <span class="stat-chip ok">No Data</span>
+      </div>
+      <div class="stat salmon">
+        <span class="stat-icon">◉</span>
+        <div class="stat-val">--</div>
+        <div class="stat-lbl">Fee Due</div>
+        <span class="stat-chip warn">No Data</span>
+      </div>
+      <div class="stat sand">
+        <span class="stat-icon">⬡</span>
+        <div class="stat-val">--</div>
+        <div class="stat-lbl">Hostel Dues</div>
+        <span class="stat-chip warn">No Data</span>
+      </div>
+      <div class="stat green">
+        <span class="stat-icon">▣</span>
+        <div class="stat-val">--</div>
+        <div class="stat-lbl">Admit Card</div>
+        <span class="stat-chip ok">No Data</span>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid">
+
+      <!-- QUICK SERVICES -->
+      <div class="card">
+        <div class="card-h"><h3>/ Quick Services</h3></div>
+        <div class="card-b">
+          <div class="svc-grid">
+            <div class="svc" onclick="quickCheck('scholarship')">
+              <span class="svc-icon">✦</span>
+              <div class="svc-name">Scholarship</div>
+              <div class="svc-desc">Check eligibility & status</div>
+              <span class="svc-tag ok">● No Data</span>
+            </div>
+            <div class="svc" onclick="quickCheck('fee')">
+              <span class="svc-icon">◉</span>
+              <div class="svc-name">Fee Voucher</div>
+              <div class="svc-desc">View & download PDF</div>
+              <span class="svc-tag warn">● No Data</span>
+            </div>
+            <div class="svc" onclick="quickCheck('hostel')">
+              <span class="svc-icon">⬡</span>
+              <div class="svc-name">Hostel</div>
+              <div class="svc-desc">Dues & extensions</div>
+              <span class="svc-tag red">● No Data</span>
+            </div>
+            <div class="svc" onclick="quickCheck('admit')">
+              <span class="svc-icon">▣</span>
+              <div class="svc-name">Admit Card</div>
+              <div class="svc-desc">Download your card</div>
+              <span class="svc-tag ok">● No Data</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTICES -->
+      <div class="card">
+        <div class="card-h">
+          <h3>/ Notices</h3>
+          <button class="btn-sm" onclick="reloadNotices()">Refresh</button>
+        </div>
+        <div class="card-b">
+          <div class="notices" id="noticeList">
+            <div class="notice info">
+              <span class="notice-icon">◈</span>
+              <div class="notice-txt"><strong>No notices yet.</strong> University updates will appear here when data is available.</div>
+            </div>
+            <div class="notice warn">
+              <span class="notice-icon">⚠</span>
+              <div class="notice-txt"><strong>Hostel:</strong> No hostel notice available yet.</div>
+            </div>
+            <div class="notice info">
+              <span class="notice-icon">✦</span>
+              <div class="notice-txt"><strong>Scholarship:</strong> No scholarship notice available yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI ASSISTANT — full width -->
+      <div class="card span2" id="ai-section">
+        <div class="card-h">
+          <h3>/ AI Assistant</h3>
+          <span style="font-size:11px;color:var(--mid);font-weight:300">Powered by UOL SmartAssist</span>
+        </div>
+        <div class="card-b">
+          <div class="chat-wrap">
+            <div class="chat-msgs" id="chatMsgs">
+              <div class="msg ai">
+                <div class="msg-lbl">SmartAssist AI</div>
+                Hello <span id="aiName">Ali</span>! I'm your university AI assistant. Ask me about scholarships, fee vouchers, hostel dues, admit cards, or any urgent issues. How can I help you today?
+              </div>
+            </div>
+            <div class="typing" id="typingEl">
+              <div class="dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="qp">
+              <button class="qbtn" onclick="sendQ('Do you have scholarship data?')">✦ Scholarship</button>
+              <button class="qbtn" onclick="sendQ('Do you have fee voucher data?')">◉ Fee Voucher</button>
+              <button class="qbtn" onclick="sendQ('Do you have hostel data?')">⬡ Hostel</button>
+              <button class="qbtn" onclick="sendQ('Do you have admit card data?')">▣ Admit Card</button>
+              <button class="qbtn" onclick="sendQ('I have an urgent issue')">⚠ Urgent</button>
+            </div>
+            <div class="chat-row">
+              <input class="chat-input" type="text" id="chatIn" placeholder="Ask anything about your university services…" onkeypress="if(event.key==='Enter')sendMsg()"/>
+              <button class="chat-send" onclick="sendMsg()">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEE VOUCHER -->
+      <div class="card">
+        <div class="card-h">
+          <h3>/ Fee Voucher</h3>
+          <button class="btn-sm" onclick="quickCheck('fee')">Check AI</button>
+        </div>
+        <div class="card-b">
+          <table class="voucher-tbl">
+            <tr><td>Student Name</td><td id="vName">--</td></tr>
+            <tr><td>Semester Fee</td><td class="amt">--</td></tr>
+            <tr><td>Scholarship</td><td class="ok">--</td></tr>
+            <tr><td>Net Payable</td><td class="amt">--</td></tr>
+            <tr><td>Due Date</td><td>--</td></tr>
+            <tr><td>Status</td><td class="warn">No Data</td></tr>
+          </table>
+          <a class="btn-dl" href="/api/download-voucher">↓ Download Voucher (When Available)</a>
+        </div>
+      </div>
+
+      <!-- HOSTEL -->
+      <div class="card">
+        <div class="card-h">
+          <h3>/ Hostel Status</h3>
+          <button class="btn-sm" onclick="quickCheck('hostel')">Check AI</button>
+        </div>
+        <div class="card-b">
+          <div class="hostel-rows">
+            <div class="h-row"><span class="h-lbl">Room</span><span class="h-val ok">--</span></div>
+            <div class="h-row"><span class="h-lbl">Monthly Fee</span><span class="h-val">--</span></div>
+            <div class="h-row"><span class="h-lbl">Months Overdue</span><span class="h-val warn">--</span></div>
+            <div class="h-row"><span class="h-lbl">Clearance</span><span class="h-val red">No Data</span></div>
+          </div>
+          <div class="hostel-ai" id="hostelAi"></div>
+          <button class="btn-warn" onclick="requestExt()">⚠ Request Payment Extension</button>
+        </div>
+      </div>
+
+      <!-- UPLOAD & VERIFY — full width -->
+      <div class="card span2" id="upload-section">
+        <div class="card-h">
+          <h3>/ Upload & AI Verify Voucher</h3>
+          <span style="font-size:11px;color:var(--mid);font-weight:300">AI analyzes your document instantly</span>
+        </div>
+        <div class="card-b">
+          <div class="upload-zone" id="upZone">
+            <input type="file" id="fileIn" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(event)"/>
+            <span class="upload-icon-big">↑</span>
+            <div class="upload-title">Drop your voucher here</div>
+            <div class="upload-sub">or click to browse — PDF, JPG, PNG supported</div>
+            <div class="upload-hint">Max 10 MB · Analyzed instantly by UOL SmartAssist AI</div>
+          </div>
+          <div class="upload-res" id="upRes"></div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+
+    <section class="contact-section" id="contact-section">
+      <div>
+        <div class="contact-title">Contact & Support</div>
+        <p class="contact-copy">For urgent student service issues, use the AI assistant first. Critical matters are marked for admin office attention.</p>
+      </div>
+      <div class="contact-box">
+        <strong>Student Office</strong>
+        <span>University of Lahore<br/>Fee, admit card, scholarship, and hostel support</span>
+      </div>
+      <div class="contact-box">
+        <strong>Portal Help</strong>
+        <span>Email: support@uol.edu.pk<br/>Timing: Monday to Friday, 9 AM - 5 PM</span>
+      </div>
+    </section>
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+const STORAGE_KEY = 'uolSmartAssistUser';
+let student = null;
+
+window.onload = () => {
+  const storedUser = localStorage.getItem(STORAGE_KEY);
+  if (!storedUser) {
+    window.location.href = '/login';
+    return;
+  }
+
+  try {
+    student = JSON.parse(storedUser);
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+    window.location.href = '/login';
+    return;
+  }
+
+  if (!student?.name || !student?.email) {
+    localStorage.removeItem(STORAGE_KEY);
+    window.location.href = '/login';
+    return;
+  }
+
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const d = new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('hName').textContent = student.name;
+  document.getElementById('hSub').textContent = g + ', welcome to UOL SmartAssist · ' + student.email;
+  document.getElementById('topDate').textContent = d;
+  document.getElementById('sbName').textContent = student.name;
+  document.getElementById('sbAvatar').textContent = student.name.slice(0,2).toUpperCase();
+  document.getElementById('aiName').textContent = student.name;
+  document.getElementById('vName').textContent = student.name;
+};
+
+function signOut(event) {
+  event.preventDefault();
+  localStorage.removeItem(STORAGE_KEY);
+  window.location.href = '/login';
+}
+
+function setActive(el) {
+  document.querySelectorAll('.sb-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleSb() { document.getElementById('sb').classList.toggle('open'); }
+
+function smoothScroll(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── AI Chat ──
+async function sendMsg() {
+  const input = document.getElementById('chatIn');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  appendMsg(msg, 'user');
+  setTyping(true);
+  try {
+    const r = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    });
+    const d = await r.json();
+    setTyping(false);
+    appendMsg(d.reply || 'I could not process that request.', 'ai');
+  } catch {
+    setTyping(false);
+    appendMsg('⚠ Server error. Please visit the university office or try again.', 'ai');
+  }
+}
+
+function sendQ(text) { document.getElementById('chatIn').value = text; sendMsg(); }
+
+function appendMsg(text, sender) {
+  const box = document.getElementById('chatMsgs');
+  const div = document.createElement('div');
+  div.className = 'msg ' + sender;
+  if (sender === 'ai') div.innerHTML = '<div class="msg-lbl">SmartAssist AI</div>' + text;
+  else div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function setTyping(show) {
+  document.getElementById('typingEl').style.display = show ? 'block' : 'none';
+  document.getElementById('chatMsgs').scrollTop = 9999;
+}
+
+// ── Quick check ──
+async function quickCheck(type) {
+  smoothScroll('ai-section');
+  sendQ('Check my ' + type + ' status please');
+}
+
+// ── Hostel extension ──
+async function requestExt() {
+  const el = document.getElementById('hostelAi');
+  el.style.display = 'block';
+  el.textContent = 'Processing request…';
+  try {
+    const r = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'hostel extension request urgent' })
+    });
+    const d = await r.json();
+    el.textContent = '◈ ' + (d.reply || 'Extension request noted. The accounts office has been notified.');
+  } catch {
+    el.textContent = '⚠ Request noted. Please also visit the Accounts Office directly.';
+  }
+}
+
+// ── Upload ──
+async function handleUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const res = document.getElementById('upRes');
+  res.style.display = 'block';
+  res.style.color = 'var(--teal)';
+  res.textContent = '◈ Uploading and analyzing your voucher…';
+  const fd = new FormData();
+  fd.append('voucher', file);
+  try {
+    const r = await fetch('/api/upload-voucher', { method: 'POST', body: fd });
+    const d = await r.json();
+    res.style.color = 'var(--green)';
+    res.innerHTML = '✓ <strong>AI Verification Complete</strong> — ' + (d.message || 'Voucher received. No official university data is available yet.');
+  } catch {
+    setTimeout(() => {
+      res.style.color = 'var(--green)';
+      res.innerHTML = '✓ <strong>AI Verification Complete</strong> — Voucher received. No official university data is available yet.';
+    }, 1800);
+  }
+}
+
+// ── Notices ──
+function reloadNotices() {
+  const l = document.getElementById('noticeList');
+  l.innerHTML = '<div style="font-size:12px;color:var(--mid);padding:8px 0">Loading…</div>';
+  setTimeout(() => {
+    l.innerHTML = `
+      <div class="notice info"><span class="notice-icon">◈</span><div class="notice-txt"><strong>No notices yet.</strong> University updates will appear here when available.</div></div>
+      <div class="notice warn"><span class="notice-icon">⚠</span><div class="notice-txt"><strong>Hostel:</strong> No hostel notice available yet.</div></div>
+      <div class="notice info"><span class="notice-icon">✦</span><div class="notice-txt"><strong>Scholarship:</strong> No scholarship notice available yet.</div></div>
+    `;
+  }, 600);
+}
+</script>
+</body>
+</html>

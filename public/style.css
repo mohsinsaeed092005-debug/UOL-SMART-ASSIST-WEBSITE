@@ -1,0 +1,108 @@
+/* ============================================================
+   UOL SmartAssist — Shared Global Styles
+   Theme: Editorial Minimalism — Warm White & Dark Ink
+   Inspired by: Free University of Bozen editorial design
+   ============================================================ */
+
+/* All primary styles are self-contained in each HTML file
+   for easy deployment. This file holds shared utilities. */
+
+:root {
+  --white: #ffffff;
+  --off: #f7f5f1;
+  --warm: #edeae3;
+  --border: #dedad0;
+  --mid: #9a9590;
+  --dark: #1a1916;
+  --ink: #2d2c28;
+  --teal: #4a8a7c;
+  --teal-bg: #edf5f3;
+  --salmon: #c86a52;
+  --sand: #c4ac88;
+  --sand-bg: #f5f0e6;
+  --green: #3d8b6e;
+  --amber: #b8871e;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--off);
+  color: var(--ink);
+}
+
+/* Focus accessibility */
+*:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+/* Text selection */
+::selection {
+  background: rgba(74, 138, 124, 0.2);
+  color: var(--dark);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--mid); }
+
+/* Typography scale */
+.display {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--mid);
+  font-weight: 600;
+}
+
+/* Utility */
+.text-teal { color: var(--teal); }
+.text-mid  { color: var(--mid); }
+.text-dark { color: var(--dark); }
+.text-green { color: var(--green); }
+.text-amber { color: var(--amber); }
+.text-salmon { color: var(--salmon); }
+
+.fw-light  { font-weight: 300; }
+.fw-normal { font-weight: 400; }
+.fw-medium { font-weight: 500; }
+.fw-semi   { font-weight: 600; }
+
+/* Badge / chip utility */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 11px;
+  border-radius: 20px;
+}
+.chip.ok    { background: #edf6f1; color: var(--green);  border: 1px solid #b8ddd0; }
+.chip.warn  { background: #fdf7ec; color: var(--amber);  border: 1px solid #e8d4a8; }
+.chip.info  { background: var(--teal-bg); color: var(--teal); border: 1px solid #c2ddd8; }
+.chip.alert { background: #fdf1ee; color: var(--salmon); border: 1px solid #f0bfb6; }
+
+/* Hidden utility */
+.hidden { display: none !important; }
+
+/* Print */
+@media print {
+  .sb, header, .btn-primary { display: none !important; }
+  .main { margin-left: 0 !important; }
+}

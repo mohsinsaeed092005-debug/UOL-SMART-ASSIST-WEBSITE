@@ -1,0 +1,7 @@
+node_modules/
+uploads/
+voucher.pdf
+esp32cam-upload/
+*.log
+.DS_Store
+Thumbs.db
